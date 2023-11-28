@@ -1,4 +1,4 @@
-//tiny_db, a relational database management system based on B+ tree
+//tiny_db, a simple relational database management system (RDBMS) based on B+ tree
 
 #include "../include/bpt.h"
 #include "../include/TextTable.h"
@@ -57,7 +57,7 @@ void printHelpMess(){
 		<<"  .exit 							exit program;" << endl
 		<<"  .reset 							delete db file;" << endl
 		<<"  insert db {index} {name} {age} {email}; 			insert record;" << endl
-		<<"  delete from db where id ={index}; 				delete record;" << endl
+		<<"  delete from db where id={index}; 				delete record;" << endl
 		<<"  update db {name} {age} {email} where id={index}; 		update a record;" << endl
 		<<"  select * from db where id={index}; 				search a record by index;" << endl
 		<<"  select * from db where id in({minIndex},{maxIndex}); 		search records between indexs;" << endl
