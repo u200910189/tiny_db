@@ -1,4 +1,4 @@
-A simple RDBMS based on B+ tree, c/c++
+Simple RDBMS based on B+ tree, c/c++
 ------------------
 
 environment: Ubuntu 18.04
@@ -14,7 +14,7 @@ How to run it
 2. follow the printed messages to maneuver the database;
 3. type ".exit" to quit the program.
 
-The CRUD operations it supports:
+The CRUD operations it supports
 1. create (insert): insert db {id} {name} {age} {email};
 2. read (query): select * from db where id={id};
 3. update: update db {name} {age} {email} where id={id};
