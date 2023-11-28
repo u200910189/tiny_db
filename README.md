@@ -5,7 +5,7 @@ environment: Ubuntu 18.04
 
 What it does
 ------------------
-This is a simple relational database management system (RDBMS). It supports create, read, update, delete (CRUD) operations with O(log(n)) time complexity, as well as efficient range-based queries. The backend is supported by a B+ tree, which is better at minimizing disk I/O operatons compared to red-black trees.
+This is a simple relational database management system (RDBMS). It supports create, read, update, delete (CRUD) operations with O(log(n)) time complexity, as well as efficient range-based queries. The backend is bolstered by B+ trees, aiming to effectively minimize disk I/O operatons in constrast to red-black trees.
 
 
 How to run it
