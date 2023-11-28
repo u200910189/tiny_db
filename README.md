@@ -23,10 +23,10 @@ The CRUD operations it supports:
 
 
 Example to insert an entry
-![alt text](insert.png)
+![alt text](./md_image/insert.png)
 
 to query in range
-![alt text](range_query.png)
+![alt text](./md_image/range_query.png)
 
 Presently, the database system does not support customized tables, the data must be in the form {id} {name} {age} {email}, where {id} is the primary key, the database is stored at "./data/db.bin".
 
