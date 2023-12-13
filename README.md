@@ -30,3 +30,10 @@ to query in range
 
 Presently, the database system does not support customized tables, the data must be in the form {id} {name} {age} {email}, where {id} is the primary key, the database is stored at "./data/db.bin".
 
+Test 
+---------------------------
+Use [rspec](http://rspec.info/) for the test of our RDBMS, insert 2000 rows:
+type 'bundle install --binstubs' to install, then type 'bundle exec rspec',
+
+![alt text](./md_image/rspec_test.png)
+2000 rows inserted in 0.15s, the generated data file is about 2MB, saved in ./data/db.bin

@@ -26,6 +26,10 @@ inline typename T::child_t end(T &node) {
 }
 
 /* helper searching function */
+// for internal node, the usage of upper_bound( , end(node) - 1, ) means the last key is dummy
+// internal node structure is like: | |k1| |k2| |k3_dummy|, blank space represents a child
+// for internal node, use upper_bound() rather than lower_bound() in search or insert, 
+// means if a value equals a key, it goes to the right child, we have c1.key < k1 <= c2.key, c1 c2 represent children
 inline index_t *find(internal_node_t &node, const key_t &key) {
     return upper_bound(begin(node), end(node) - 1, key);
 }
@@ -149,7 +153,7 @@ int bplus_tree::remove(const key_t& key)
     std::copy(to_delete + 1, end(leaf), to_delete);
     leaf.n--;
 
-    // merge or borrow
+    // first try borrow, if cannot, then merge
     if (leaf.n < min_n) {
         // first borrow from left
         bool borrowed = false;
@@ -167,7 +171,7 @@ int bplus_tree::remove(const key_t& key)
             key_t index_key;
 
             if (where == end(parent) - 1) {
-                // if leaf is last element then merge | prev | leaf |
+                // if leaf is last element then merge | prev | leaf |, "leaf" is removed
                 assert(leaf.prev != 0);
                 leaf_node_t prev;
                 map(&prev, leaf.prev);
@@ -177,7 +181,7 @@ int bplus_tree::remove(const key_t& key)
                 node_remove(&prev, &leaf);
                 unmap(&prev, leaf.prev);
             } else {
-                // else merge | leaf | next |
+                // else merge | leaf | next |, "next" is removed
                 assert(leaf.next != 0);
                 leaf_node_t next;
                 map(&next, leaf.next);
@@ -188,7 +192,7 @@ int bplus_tree::remove(const key_t& key)
                 unmap(&leaf, offset);
             }
 
-            // remove parent's key
+            // remove parent's key, the index_key is not the exact key that will be deleted, see "to_delete" in remove_from_index()
             remove_from_index(parent_off, parent, index_key);
         } else {
             unmap(&leaf, offset);
@@ -237,11 +241,11 @@ int bplus_tree::insert(const key_t& key, value_t value)
         else
             insert_record_no_split(&leaf, key, value);
 
-        // save leafs
+        // save leaves
         unmap(&leaf, offset);
         unmap(&new_leaf, leaf.next);
 
-        // insert new index key
+        // insert new index key, insert_key_to_index( , new_leaf.children[0].key, , ) means if a value equals a key, it goes to the right child, consistent with the comment for find()
         insert_key_to_index(parent, new_leaf.children[0].key,
                             offset, leaf.next);
     } else {
@@ -272,6 +276,7 @@ int bplus_tree::update(const key_t& key, value_t value)
         return -1;
 }
 
+// in the arguments, "offset" is the offset of node, as node does not contain the offset of itself
 void bplus_tree::remove_from_index(off_t offset, internal_node_t &node,
                                    const key_t &key)
 {
@@ -282,12 +287,14 @@ void bplus_tree::remove_from_index(off_t offset, internal_node_t &node,
     key_t index_key = begin(node)->key;
     index_t *to_delete = find(node, key);
     if (to_delete != end(node)) {
-        (to_delete + 1)->child = to_delete->child;
+        // in remove(), the child on the right of to_delete is merged to the child on the left, 
+        // consistent with the usage and comment of merge_leafs(&leaf, &next) in remove()
+        (to_delete + 1)->child = to_delete->child;   
         std::copy(to_delete + 1, end(node), to_delete);
     }
     node.n--;
 
-    // remove to only one key
+    // when "node" is the root and there is only one child left, change root and adjust height
     if (node.n == 1 && meta.root_offset == offset &&
                        meta.internal_node_num != 1)
     {
@@ -317,7 +324,7 @@ void bplus_tree::remove_from_index(off_t offset, internal_node_t &node,
             assert(node.next != 0 || node.prev != 0);
 
             if (offset == (end(parent) - 1)->child) {
-                // if leaf is last element then merge | prev | leaf |
+                // if node is last element then merge | prev | node |, "node" is removed
                 assert(node.prev != 0);
                 internal_node_t prev;
                 map(&prev, node.prev);
@@ -328,7 +335,7 @@ void bplus_tree::remove_from_index(off_t offset, internal_node_t &node,
                 merge_keys(where, prev, node);
                 unmap(&prev, node.prev);
             } else {
-                // else merge | leaf | next |
+                // else merge | node | next |, "next" is removed
                 assert(node.next != 0);
                 internal_node_t next;
                 map(&next, node.next);

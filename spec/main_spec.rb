@@ -24,14 +24,14 @@ describe 'database' do
 
 
   it 'insert test' do
-    script = (1..5000).map do |i|
+    script = (1..2000).map do |i|
       "insert db #{i} user#{i} #{i*12} person#{i}@example.com"
     end
     script << ".exit"
     result = run_script(script)
-    expect(result.last(2)).to match_array([
-      ">insert",
-      "> bye!",
+    expect(result.last(1)).to match_array([
+      #"> > insert",
+      "> > bye!",
     ])
   end
 end

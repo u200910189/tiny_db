@@ -25,8 +25,8 @@ typedef struct {
     size_t value_size; /* size of value */
     size_t key_size;   /* size of key */
     size_t internal_node_num; /* how many internal nodes */
-    size_t leaf_node_num;     /* how many leafs */
-    size_t height;            /* height of tree (exclude leafs) */
+    size_t leaf_node_num;     /* how many leaves */
+    size_t height;            /* height of tree (exclude leaves) */
     off_t slot;        /* where to store new block */
     off_t root_offset; /* where is the root of internal nodes */
     off_t leaf_offset; /* where is the first leaf */
